@@ -1,4 +1,4 @@
-import {Box, Card, Typography, IconButton} from '@mui/joy';
+import {Box, Card, Typography, IconButton, Sheet} from '@mui/joy';
 import ListIcon from '@mui/icons-material/List';
 import {useNavigate} from 'react-router-dom';
 
@@ -27,14 +27,14 @@ const ViewTemplate = function(props) {
         </IconButton>
       </Card>
 
-      <Box
+      <Sheet
         className="main-content"
         sx={{
           width: '100%',
-          overflow: 'hidden',
+          height: '100%'
         }}>
         {props.children}
-      </Box>
+      </Sheet>
     </Box>
   );
 }

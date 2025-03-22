@@ -1,5 +1,5 @@
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import MovieGalleryView from './MovieGalleryView';
+import VideoGalleryView from './VideoGalleryView';
 import VideoView from './VideoView';
 
 const Root = function() {
@@ -7,8 +7,8 @@ const Root = function() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MovieGalleryView />}></Route>
-          <Route path="/video" element={<VideoView />}></Route>
+          <Route path="/" element={<VideoGalleryView />}></Route>
+          <Route path="/video/*" element={<VideoView />}></Route>
 
         </Routes>
       </BrowserRouter>
