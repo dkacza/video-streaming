@@ -1,6 +1,34 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+const fs = require("fs");
+
+const libraryPath = path.join(__dirname, "data", "library.json");
+
+function getMovieList() {
+  if (!fs.existsSync(libraryPath)) {
+    console.log("No library found. The movie list is empty.");
+    return [];
+  }
+
+  const fileContent = fs.readFileSync(libraryPath, "utf-8");
+
+  if (!fileContent.trim()) {
+    console.log("Library file is empty.");
+    return [];
+  }
+
+  try {
+    const movies = JSON.parse(fileContent);
+    return movies;
+  } catch (error) {
+    console.error("Error parsing library.json:", error);
+    return [];
+  }
+}
+
+const movieList = getMovieList();
+console.log("Movie List:", movieList);
 
 const app = express();
 app.use(cors({
@@ -13,7 +41,7 @@ app.use(cors({
 app.use("/data", express.static(path.join(__dirname, "data")));
 
 app.get("/", (req, res) => {
-    res.send("HLS Server Running. Access HLS stream at /data/master.m3u8");
+    res.send(movieList);
 });
 
 const PORT = 3000;
