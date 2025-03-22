@@ -1,10 +1,17 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import {CssBaseline, CssVarsProvider} from '@mui/joy';
+import { MovieProvider } from './MovieProvider.jsx';
+import Root from './Root.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <CssVarsProvider>
+      <CssBaseline>
+        <MovieProvider>
+          <Root/>
+        </MovieProvider>
+      </CssBaseline>
+    </CssVarsProvider>
   </StrictMode>,
 )
