@@ -55,6 +55,7 @@ const HLSPlayer = () => {
     // Update current quality dynamically when "auto" mode is enabled
     useEffect(() => {
         if (hlsRef.current && selectedQuality === "auto") {
+            
             const interval = setInterval(() => {
                 if (hlsRef.current && hlsRef.current.currentLevel !== -1) {
                     setCurrentQuality(`${hlsRef.current.levels[hlsRef.current.currentLevel].height}p`);
@@ -78,19 +79,46 @@ const HLSPlayer = () => {
             }
         }
     };
+    const recreateHlsPlayer = (newConfigOverrides = {}) => {
+    if (hlsRef.current) {
+        hlsRef.current.destroy();
+    }
+
+    const hls = new Hls({
+        ...Hls.DefaultConfig,
+        ...newConfigOverrides
+    });
+
+    hls.loadSource(hlsSrc);
+    hls.attachMedia(videoRef.current);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        videoRef.current.play();
+        setLevels(hls.levels.map((level, index) => ({ index, height: level.height })));
+    });
+
+    hls.on(Hls.Events.LEVEL_SWITCHED, (_, data) => {
+        if (hls.levels[data.level]) {
+            setCurrentQuality(`${hls.levels[data.level].height}p`);
+        }
+    });
+
+    hlsRef.current = hls;
+};
 
     const handleChangeAbrBandWidthFactor = (event, newValue) => {
-        hlsRef.current.config.abrBandWidthFactor = newValue;
+    recreateHlsPlayer({ abrBandWidthFactor: newValue });
     };
     const handleChangeAbrBandWidthUpFactor = (event, newValue) => {
-        hlsRef.current.config.abrBandWidthUpFactor = newValue;
+    recreateHlsPlayer({ abrBandWidthUpFactor: newValue });
     };
     const handleChangeAbrEwmaFastLive = (event, newValue) => {
-        hlsRef.current.config.abrEwmaFastLive = newValue;
+    recreateHlsPlayer({ abrEwmaFastLive: newValue });
     };
     const handleChangeAbrEwmaSlowLive = (event, newValue) => {
-        hlsRef.current.config.abrEwmaSlowLive = newValue;
+    recreateHlsPlayer({ abrEwmaSlowLive: newValue });
     };
+
 
     return (
         <Box sx={{ padding: 4, maxWidth: "75%", margin: "auto" }}>
